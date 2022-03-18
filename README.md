@@ -1,5 +1,21 @@
 # Arduino 版 ATOM Babies
 
+※[UiFlow](https://flow.m5stack.com/) で実装する場合は[UiFlow 版 ATOM Babies](https://github.com/3110/atom-babies)を参照してください。
+
+<div align="center">
+<img src="https://i.gyazo.com/e46dc64eac0adfe1591c9fb7c9dc737b.jpg" width="480"/>
+</div>
+
+## ATOM Babies とは
+
+ATOM Babies は M5Stack 社の<a href="https://shop.m5stack.com/collections/atom-series/products/atom-matrix-esp32-development-kit">ATOM Matrix</a>を顔とし，<a href="https://shop.m5stack.com/products/atom-mate">ATOM Mate</a>を利用して M5Stick C シリーズで使用する Hat を胴体にしたかわいいいきものです。Hat だけでなく，M5Stack 用に用意されているユニットも使用できるので，それらの機能を活用してさまざまな能力を持つ ATOM Babies をつくることができます。
+
+ちなみに，ATOM Babies の名付け親は M5Stack 社 CEO の Jimmy Lai さんです。
+
+<p align="center">
+<img src="https://i.gyazo.com/338db268a5e14a0bea83b9184c8a8043.png" width="480"/>
+</p>
+
 ## 環境設定
 
 [Arduino IDE](https://docs.arduino.cc/software/ide-v1)と[PlatformIO IDE for VSCode](https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide) 環境に対応しています。動作確認は Windows 11 上で実施しています。
