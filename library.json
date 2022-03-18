@@ -1,0 +1,26 @@
+{
+  "name": "ATOM Babies",
+  "description": "ATOM Babies is a library for creating kawaii creatures with M5Atom.",
+  "keywords": "M5Atom,kawaii,creatures,robot",
+  "authors": {
+    "name": "SAITO, Tetsuya",
+    "email": "saito.tetsuya+github@gmail.com",
+    "url": "https://github.com/3110"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/3110/atom-babies-arduino"
+  },
+  "version": "0.0.1",
+  "license": "MIT",
+  "frameworks": "arduino",
+  "platforms": "espressif32",
+  "headers": "AtomBabies.h",
+  "dependencies": {
+    "m5stack/M5Atom": "*",
+    "fastled/FastLED": "*"
+  },
+  "build": {
+    "srcFilter": ["+<*.cpp>", "+<*.h>"]
+  }
+}

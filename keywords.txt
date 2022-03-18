@@ -1,0 +1,64 @@
+#######################################
+# Syntax Coloring Map
+#######################################
+
+#######################################
+# Data Types (KEYWORD1)
+#######################################
+AtomBabies	KEYWORD1
+FacePosition	KEYWORD1
+FaceOrientation	KEYWORD1
+BlinkParam	KEYWORD1
+BowParam	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+begin	KEYWORD2
+update	KEYWORD2
+openEyes	KEYWORD2
+closeEyes	KEYWORD2
+setCheeks	KEYWORD2
+clearCheeks	KEYWORD2
+startBlink	KEYWORD2
+stopBlink	KEYWORD2
+toggleBlink	KEYWORD2
+isBlinking	KEYWORD2
+setBlinkParam	KEYWORD2
+setOrientation	KEYWORD2
+setFace	KEYWORD2
+clearFace	KEYWORD2
+fillFace	KEYWORD2
+bow	KEYWORD2
+setBowParam	KEYWORD2
+_doBlink	KEYWORD2
+setLED	KEYWORD2
+setLEDs	KEYWORD2
+setEyes	KEYWORD2
+setCheeks	KEYWORD2
+getLEDPosition	KEYWORD2
+
+######################################
+# Constants (LITERAL1)
+#######################################
+VERSION	LITERAL1
+N_POSITIONS LITERAL1
+MAX_POSITION	LITERAL1
+DEFAULT_EYE_COLOR	LITERAL1
+DEFAULT_CHEEK_COLOR	LITERAL1
+DEFAULT_BACKGROUND_COLOR	LITERAL1
+DEFAULT_BLINK	LITERAL1
+DEFAULT_BOW LITERAL1
+FaceTop	LITERAL1
+FaceUp	LITERAL1
+FaceNormal	LITERAL1
+FaceRight	LITERAL1
+FaceLeft	LITERAL1
+FaceDown	LITERAL1
+FaceBottom	LITERAL1
+OrientationNormal	LITERAL1
+OrientationRight	LITERAL1
+OrientationLeft	LITERAL1
+OrientationUpsideDown	LITERAL1
+# Namespace
+M5Stack_AtomBabies	LITERAL1
