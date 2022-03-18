@@ -31,6 +31,14 @@ platformio run --target=upload
 
 ## 実装方法
 
+顔の向きは USB-C の口を下にした向きを基準として以下のように定義しています。
+
+<a href="https://gyazo.com/a210b4d6c098baf76d47a5af3ea772fb"><img src="https://i.gyazo.com/a210b4d6c098baf76d47a5af3ea772fb.png" alt="顔の向き" width="480"/></a>
+
+顔の位置は顔の向きがどの方向でも以下のように定義しています。
+
+<a href="https://gyazo.com/b02a5dcf99ae07560e1e334809e2e069"><img src="https://i.gyazo.com/b02a5dcf99ae07560e1e334809e2e069.png" alt="顔の位置" width="480"/></a>
+
 通常の顔の向きで顔を表示するための最低限の実装は以下のようになります。
 `M5.begin()`と`M5.update()`はそれぞれ`babies.begin()`と`babies.update()`の中で呼んでいるので，改めて呼ぶ必要はありません。
 
