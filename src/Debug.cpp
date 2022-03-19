@@ -1,6 +1,6 @@
 #include "Debug.h"
 
-#ifdef ENABLE_SERIAL_MONITOR
+#ifdef DEBUG
 
 #ifndef ETH_ALEN
 #define ETH_ALEN 6
