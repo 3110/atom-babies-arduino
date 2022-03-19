@@ -1,12 +1,28 @@
 # Arduino 版 ATOM Babies
 
+※[UiFlow](https://flow.m5stack.com/) で実装する場合は[UiFlow 版 ATOM Babies](https://github.com/3110/atom-babies)を参照してください。
+
+<div align="center">
+<img src="https://i.gyazo.com/e46dc64eac0adfe1591c9fb7c9dc737b.jpg" width="480"/>
+</div>
+
+## ATOM Babies とは
+
+ATOM Babies は M5Stack 社の<a href="https://shop.m5stack.com/collections/atom-series/products/atom-matrix-esp32-development-kit">ATOM Matrix</a>を顔とし，<a href="https://shop.m5stack.com/products/atom-mate">ATOM Mate</a>を利用して M5Stick C シリーズで使用する Hat を胴体にしたかわいいいきものです。Hat だけでなく，M5Stack 用に用意されているユニットも使用できるので，それらの機能を活用してさまざまな能力を持つ ATOM Babies をつくることができます。
+
+ちなみに，ATOM Babies の名付け親は M5Stack 社 CEO の Jimmy Lai さんです。
+
+<p align="center">
+<img src="https://i.gyazo.com/338db268a5e14a0bea83b9184c8a8043.png" width="480"/>
+</p>
+
 ## 環境設定
 
 [Arduino IDE](https://docs.arduino.cc/software/ide-v1)と[PlatformIO IDE for VSCode](https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide) 環境に対応しています。動作確認は Windows 11 上で実施しています。
 
 ### Arduino IDE
 
-[https://github.com/3110/atom-babies-arduino/archive/refs/tags/v0.0.1.zip](https://github.com/3110/atom-babies-arduino/archive/refs/tags/v0.0.1.zip) をダウンロードし，メニューの「スケッチ」-「ライブラリをインクルード」-「.ZIP 形式のライブラリをインストール...」を選択して ZIP ファイルを読み込みます。読み込み後，念のために Arduino IDE を再起動してください。
+[https://github.com/3110/atom-babies-arduino/archive/refs/tags/v0.0.2.zip](https://github.com/3110/atom-babies-arduino/archive/refs/tags/v0.0.2.zip) をダウンロードし，メニューの「スケッチ」-「ライブラリをインクルード」-「.ZIP 形式のライブラリをインストール...」を選択して ZIP ファイルを読み込みます。読み込み後，念のために Arduino IDE を再起動してください。
 
 サンプルはメニューの「ファイル」-「スケッチ例」にある「カスタムライブラリのスケッチ例」から「ATOM Babies」を選択し，「AllFaces」「Blink」「Bow」「Greeting」のいずれかを選びます。
 
@@ -30,6 +46,14 @@ platformio run --target=upload
 ```
 
 ## 実装方法
+
+顔の向きは USB-C の口を下にした向きを基準として以下のように定義しています。
+
+<a href="https://gyazo.com/a210b4d6c098baf76d47a5af3ea772fb"><img src="https://i.gyazo.com/a210b4d6c098baf76d47a5af3ea772fb.png" alt="顔の向き" width="480"/></a>
+
+顔の位置は顔の向きがどの方向でも以下のように定義しています。
+
+<a href="https://gyazo.com/b02a5dcf99ae07560e1e334809e2e069"><img src="https://i.gyazo.com/b02a5dcf99ae07560e1e334809e2e069.png" alt="顔の位置" width="480"/></a>
 
 通常の顔の向きで顔を表示するための最低限の実装は以下のようになります。
 `M5.begin()`と`M5.update()`はそれぞれ`babies.begin()`と`babies.update()`の中で呼んでいるので，改めて呼ぶ必要はありません。
