@@ -103,19 +103,19 @@ bool AtomBabies::update(void) {
 }
 
 void AtomBabies::openEyes(void) {
-    setEyesColor(this->_eyeColor);
+    setEyes(this->_eyeColor);
 }
 
 void AtomBabies::closeEyes(void) {
-    setEyesColor(this->_backgroundColor);
+    setEyes(this->_backgroundColor);
 }
 
 void AtomBabies::setCheeks(void) {
-    setCheeksColor(this->_cheekColor);
+    setCheeks(this->_cheekColor);
 }
 
 void AtomBabies::clearCheeks(void) {
-    setCheeksColor(this->_backgroundColor);
+    setCheeks(this->_backgroundColor);
 }
 
 void AtomBabies::startBlink(void) {
@@ -151,11 +151,11 @@ void AtomBabies::setBowParam(const BowParam& param) {
 }
 
 void AtomBabies::setEyesColor(const CRGB& color) {
-    setLEDs(color, EYE_POSITIONS[this->_position]);
+    this->_eyeColor = color;
 }
 
 void AtomBabies::setCheeksColor(const CRGB& color) {
-    setLEDs(color, CHEEK_POSITIONS[this->_position]);
+    this->_cheekColor = color;
 }
 
 void AtomBabies::_doBlink(void) {
@@ -182,14 +182,14 @@ void AtomBabies::setOrientation(FaceOrientation orientation) {
 void AtomBabies::setFace(FacePosition position) {
     clearFace();
     this->_position = position;
-    setEyesColor(this->_eyeColor);
-    setCheeksColor(this->_cheekColor);
+    setEyes(this->_eyeColor);
+    setCheeks(this->_cheekColor);
 }
 
 void AtomBabies::clearFace(bool partial) {
     if (partial) {
-        setEyesColor(this->_backgroundColor);
-        setCheeksColor(this->_backgroundColor);
+        setEyes(this->_backgroundColor);
+        setCheeks(this->_backgroundColor);
     } else {
         fillFace(this->_backgroundColor);
     }
@@ -197,6 +197,14 @@ void AtomBabies::clearFace(bool partial) {
 
 void AtomBabies::fillFace(const CRGB& color) {
     M5.dis.fillpix(color);
+}
+
+void AtomBabies::setEyes(const CRGB& color) {
+    setLEDs(color, EYE_POSITIONS[this->_position]);
+}
+
+void AtomBabies::setCheeks(const CRGB& color) {
+    setLEDs(color, CHEEK_POSITIONS[this->_position]);
 }
 
 void AtomBabies::setLED(const CRGB& color, uint8_t position) {
