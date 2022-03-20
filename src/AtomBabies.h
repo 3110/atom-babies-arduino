@@ -79,6 +79,7 @@ public:
 
     virtual void setEyesColor(const CRGB& color);
     virtual void setCheeksColor(const CRGB& color);
+    virtual void setBackgroundColor(const CRGB& color);
 
     virtual void _doBlink(void);  // called from thread
 

@@ -184,6 +184,10 @@ void AtomBabies::setCheeksColor(const CRGB& color) {
     this->_cheekColor = color;
 }
 
+void AtomBabies::setBackgroundColor(const CRGB& color) {
+    this->_backgroundColor = color;
+}
+
 void AtomBabies::_doBlink(void) {
     for (int i = 0, n = random(1, this->_blinkParam.loop + 1); i < n; ++i) {
         if (!isBlinking()) {
