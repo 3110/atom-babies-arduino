@@ -138,6 +138,32 @@ void AtomBabies::setBlinkParam(const BlinkParam& param) {
     this->_blinkParam = param;
 }
 
+void AtomBabies::setOrientation(FaceOrientation orientation) {
+    clearFace();
+    this->_orientation = orientation;
+    setFace(this->_position);
+}
+
+void AtomBabies::setFace(FacePosition position) {
+    clearFace();
+    this->_position = position;
+    setEyes(this->_eyeColor);
+    setCheeks(this->_cheekColor);
+}
+
+void AtomBabies::clearFace(bool partial) {
+    if (partial) {
+        setEyes(this->_backgroundColor);
+        setCheeks(this->_backgroundColor);
+    } else {
+        fillFace(this->_backgroundColor);
+    }
+}
+
+void AtomBabies::fillFace(const CRGB& color) {
+    M5.dis.fillpix(color);
+}
+
 void AtomBabies::bow(bool deep) {
     setFace(FaceNormal);
     delay(this->_bowParam.before);
@@ -171,32 +197,6 @@ void AtomBabies::_doBlink(void) {
     if (isBlinking()) {
         delay(this->_blinkParam.interval);
     }
-}
-
-void AtomBabies::setOrientation(FaceOrientation orientation) {
-    clearFace();
-    this->_orientation = orientation;
-    setFace(this->_position);
-}
-
-void AtomBabies::setFace(FacePosition position) {
-    clearFace();
-    this->_position = position;
-    setEyes(this->_eyeColor);
-    setCheeks(this->_cheekColor);
-}
-
-void AtomBabies::clearFace(bool partial) {
-    if (partial) {
-        setEyes(this->_backgroundColor);
-        setCheeks(this->_backgroundColor);
-    } else {
-        fillFace(this->_backgroundColor);
-    }
-}
-
-void AtomBabies::fillFace(const CRGB& color) {
-    M5.dis.fillpix(color);
 }
 
 void AtomBabies::setEyes(const CRGB& color) {
