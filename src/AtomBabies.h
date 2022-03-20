@@ -77,14 +77,15 @@ public:
     virtual void bow(bool deep = false);
     virtual void setBowParam(const BowParam& param);
 
+    virtual void setEyesColor(const CRGB& color);
+    virtual void setCheeksColor(const CRGB& color);
+
     virtual void _doBlink(void);  // called from thread
 
 protected:
     virtual void setLED(const CRGB& color, uint8_t position);
     virtual void setLEDs(const CRGB& color,
                          const uint8_t (&position)[N_POSITIONS]);
-    virtual void setEyes(const CRGB& color);
-    virtual void setCheeks(const CRGB& color);
     virtual uint8_t getLEDPosition(uint8_t position);
 
 private:

@@ -103,19 +103,19 @@ bool AtomBabies::update(void) {
 }
 
 void AtomBabies::openEyes(void) {
-    setEyes(this->_eyeColor);
+    setEyesColor(this->_eyeColor);
 }
 
 void AtomBabies::closeEyes(void) {
-    setEyes(this->_backgroundColor);
+    setEyesColor(this->_backgroundColor);
 }
 
 void AtomBabies::setCheeks(void) {
-    setCheeks(this->_cheekColor);
+    setCheeksColor(this->_cheekColor);
 }
 
 void AtomBabies::clearCheeks(void) {
-    setCheeks(this->_backgroundColor);
+    setCheeksColor(this->_backgroundColor);
 }
 
 void AtomBabies::startBlink(void) {
@@ -150,6 +150,14 @@ void AtomBabies::setBowParam(const BowParam& param) {
     this->_bowParam = param;
 }
 
+void AtomBabies::setEyesColor(const CRGB& color) {
+    setLEDs(color, EYE_POSITIONS[this->_position]);
+}
+
+void AtomBabies::setCheeksColor(const CRGB& color) {
+    setLEDs(color, CHEEK_POSITIONS[this->_position]);
+}
+
 void AtomBabies::_doBlink(void) {
     for (int i = 0, n = random(1, this->_blinkParam.loop + 1); i < n; ++i) {
         if (!isBlinking()) {
@@ -174,14 +182,14 @@ void AtomBabies::setOrientation(FaceOrientation orientation) {
 void AtomBabies::setFace(FacePosition position) {
     clearFace();
     this->_position = position;
-    setEyes(this->_eyeColor);
-    setCheeks(this->_cheekColor);
+    setEyesColor(this->_eyeColor);
+    setCheeksColor(this->_cheekColor);
 }
 
 void AtomBabies::clearFace(bool partial) {
     if (partial) {
-        setEyes(this->_backgroundColor);
-        setCheeks(this->_backgroundColor);
+        setEyesColor(this->_backgroundColor);
+        setCheeksColor(this->_backgroundColor);
     } else {
         fillFace(this->_backgroundColor);
     }
@@ -204,14 +212,6 @@ void AtomBabies::setLEDs(const CRGB& color,
     for (size_t i = 0; i < N_POSITIONS; ++i) {
         setLED(color, position[i]);
     }
-}
-
-void AtomBabies::setEyes(const CRGB& color) {
-    setLEDs(color, EYE_POSITIONS[this->_position]);
-}
-
-void AtomBabies::setCheeks(const CRGB& color) {
-    setLEDs(color, CHEEK_POSITIONS[this->_position]);
 }
 
 uint8_t AtomBabies::getLEDPosition(uint8_t position) {
