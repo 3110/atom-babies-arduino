@@ -81,6 +81,9 @@ public:
     virtual void setCheeksColor(const CRGB& color);
     virtual void setBackgroundColor(const CRGB& color);
 
+    virtual bool isPressed(void);
+    virtual bool wasPressed(void);
+
     virtual void _doBlink(void);  // called from thread
 
 protected:

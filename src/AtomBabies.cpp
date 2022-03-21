@@ -188,6 +188,14 @@ void AtomBabies::setBackgroundColor(const CRGB& color) {
     this->_backgroundColor = color;
 }
 
+bool AtomBabies::isPressed(void) {
+    return M5.Btn.isPressed();
+}
+
+bool AtomBabies::wasPressed(void) {
+    return M5.Btn.wasPressed();
+}
+
 void AtomBabies::_doBlink(void) {
     for (int i = 0, n = random(1, this->_blinkParam.loop + 1); i < n; ++i) {
         if (!isBlinking()) {
