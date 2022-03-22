@@ -54,6 +54,29 @@ const uint8_t ORIENTATIONS[][AtomBabies::MAX_POSITION] = {
      12, 11, 10, 9,  8,  7,  6,  5,  4,  3,  2,  1},  // Upside Down
 };
 
+const uint8_t DIGIT0[] = {2, 3, 4, 7, 9, 12, 14, 17, 19, 22, 23, 24};
+const uint8_t DIGIT1[] = {3, 7, 8, 13, 18, 22, 23, 24};
+const uint8_t DIGIT2[] = {2, 3, 4, 9, 12, 13, 14, 17, 22, 23, 24};
+const uint8_t DIGIT3[] = {2, 3, 4, 9, 12, 13, 14, 19, 22, 23, 24};
+const uint8_t DIGIT4[] = {2, 4, 7, 9, 12, 13, 14, 19, 24};
+const uint8_t DIGIT5[] = {2, 3, 4, 7, 12, 13, 14, 19, 22, 23, 24};
+const uint8_t DIGIT6[] = {2, 3, 4, 7, 12, 13, 14, 17, 19, 22, 23, 24};
+const uint8_t DIGIT7[] = {2, 3, 4, 9, 14, 19, 24};
+const uint8_t DIGIT8[] = {2, 3, 4, 7, 9, 12, 13, 14, 17, 19, 22, 23, 24};
+const uint8_t DIGIT9[] = {2, 3, 4, 7, 9, 12, 13, 14, 19, 22, 23, 24};
+
+const uint8_t* DIGITS[] = {DIGIT0, DIGIT1, DIGIT2, DIGIT3, DIGIT4,
+                           DIGIT5, DIGIT6, DIGIT7, DIGIT8, DIGIT9};
+
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
+
+const size_t DIGITS_SIZE[] = {
+    ARRAY_SIZE(DIGIT0), ARRAY_SIZE(DIGIT1), ARRAY_SIZE(DIGIT2),
+    ARRAY_SIZE(DIGIT3), ARRAY_SIZE(DIGIT4), ARRAY_SIZE(DIGIT5),
+    ARRAY_SIZE(DIGIT6), ARRAY_SIZE(DIGIT7), ARRAY_SIZE(DIGIT8),
+    ARRAY_SIZE(DIGIT9),
+};
+
 const char AtomBabies::VERSION[] = ATOM_BABIES_VERSION;
 
 const CRGB AtomBabies::DEFAULT_EYE_COLOR(0x00, 0x64, 0x00);
@@ -71,6 +94,14 @@ const BowParam AtomBabies::DEFAULT_BOW = {
     500,  // before
     500,  // after
 };
+
+size_t getDigit(uint16_t val) {
+    size_t digit = 1;
+    while (val /= 10) {
+        ++digit;
+    }
+    return digit;
+}
 
 AtomBabies::AtomBabies(FacePosition position, FaceOrientation orientation,
                        const CRGB& eyeColor, const CRGB& cheekColor,
@@ -201,16 +232,31 @@ bool AtomBabies::wasPressed(void) {
     return M5.Btn.wasPressed();
 }
 
-void AtomBabies::setBackgroundColor(const CRGB& color) {
-    this->_backgroundColor = color;
+void AtomBabies::displayDigits(uint16_t val, const CRGB& color,
+                               uint16_t interval) {
+    size_t n = getDigit(val);
+    uint8_t digit;
+    for (size_t i = n; i != 0; --i) {
+        digit = (uint8_t)(val / pow(10, i - 1));
+        val %= (uint16_t)pow(10, i - 1);
+        clear();
+        delay(interval);
+        displayDigit(digit, color);
+        delay(interval);
+    }
+    clear();
+    delay(interval);
 }
 
-bool AtomBabies::isPressed(void) {
-    return M5.Btn.isPressed();
-}
-
-bool AtomBabies::wasPressed(void) {
-    return M5.Btn.wasPressed();
+void AtomBabies::displayDigit(uint8_t digit, const CRGB& color) {
+    if (digit > 10) {
+        return;
+    }
+    const uint8_t* pos = DIGITS[digit];
+    const size_t size = DIGITS_SIZE[digit];
+    for (size_t p = 0; p < size; ++p) {
+        setLED(color, pos[p]);
+    }
 }
 
 void AtomBabies::_doBlink(void) {

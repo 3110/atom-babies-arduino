@@ -85,9 +85,14 @@ public:
     virtual bool isPressed(void);
     virtual bool wasPressed(void);
 
+    virtual void displayDigits(uint16_t val, const CRGB& color,
+                               uint16_t interval);
+
     virtual void _doBlink(void);  // called from thread
 
 protected:
+    virtual void displayDigit(uint8_t digit, const CRGB& color);
+
     virtual void setEyes(const CRGB& color);
     virtual void setCheeks(const CRGB& color);
 
