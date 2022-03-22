@@ -67,7 +67,7 @@ AtomBabies babies;
 
 void setup(void) {
     babies.begin();
-    babies.setFace(FaceNormal);
+    babies.display();
 }
 
 void loop(void) {

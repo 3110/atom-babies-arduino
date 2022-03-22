@@ -69,17 +69,18 @@ public:
     virtual bool isBlinking(void) const;
     virtual void setBlinkParam(const BlinkParam& param);
 
-    virtual void setOrientation(FaceOrientation orientation);
-    virtual void setFace(FacePosition position);
-    virtual void clearFace(bool partial = false);
-    virtual void fillFace(const CRGB& color);
+    virtual AtomBabies& setOrientation(FaceOrientation orientation);
+    virtual AtomBabies& setFace(FacePosition position);
+    virtual AtomBabies& setEyesColor(const CRGB& color);
+    virtual AtomBabies& setCheeksColor(const CRGB& color);
+    virtual AtomBabies& setBackgroundColor(const CRGB& color);
+
+    virtual void display(void);
+    virtual void clear(bool partial = false);
+    virtual void fill(const CRGB& color);
 
     virtual void bow(bool deep = false);
     virtual void setBowParam(const BowParam& param);
-
-    virtual void setEyesColor(const CRGB& color);
-    virtual void setCheeksColor(const CRGB& color);
-    virtual void setBackgroundColor(const CRGB& color);
 
     virtual bool isPressed(void);
     virtual bool wasPressed(void);

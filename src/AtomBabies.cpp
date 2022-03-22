@@ -138,50 +138,67 @@ void AtomBabies::setBlinkParam(const BlinkParam& param) {
     this->_blinkParam = param;
 }
 
-void AtomBabies::setOrientation(FaceOrientation orientation) {
-    clearFace();
+AtomBabies& AtomBabies::setOrientation(FaceOrientation orientation) {
     this->_orientation = orientation;
-    setFace(this->_position);
+    return *this;
 }
 
-void AtomBabies::setFace(FacePosition position) {
-    clearFace();
+AtomBabies& AtomBabies::setFace(FacePosition position) {
     this->_position = position;
-    setEyes(this->_eyeColor);
-    setCheeks(this->_cheekColor);
+    return *this;
 }
 
-void AtomBabies::clearFace(bool partial) {
+AtomBabies& AtomBabies::setEyesColor(const CRGB& color) {
+    this->_eyeColor = color;
+    return *this;
+}
+
+AtomBabies& AtomBabies::setCheeksColor(const CRGB& color) {
+    this->_cheekColor = color;
+    return *this;
+}
+
+AtomBabies& AtomBabies::setBackgroundColor(const CRGB& color) {
+    this->_backgroundColor = color;
+    return *this;
+}
+
+void AtomBabies::display(void) {
+    openEyes();
+    setCheeks();
+}
+
+void AtomBabies::clear(bool partial) {
     if (partial) {
         setEyes(this->_backgroundColor);
         setCheeks(this->_backgroundColor);
     } else {
-        fillFace(this->_backgroundColor);
+        fill(this->_backgroundColor);
     }
 }
 
-void AtomBabies::fillFace(const CRGB& color) {
+void AtomBabies::fill(const CRGB& color) {
     M5.dis.fillpix(color);
 }
 
 void AtomBabies::bow(bool deep) {
-    setFace(FaceNormal);
+    setFace(FaceNormal).display();
     delay(this->_bowParam.before);
-    setFace(deep ? FaceBottom : FaceDown);
+    setFace(deep ? FaceBottom : FaceDown).display();
     delay(this->_bowParam.after);
-    setFace(FaceNormal);
+    setFace(FaceNormal).display();
 }
 
 void AtomBabies::setBowParam(const BowParam& param) {
     this->_bowParam = param;
 }
 
-void AtomBabies::setEyesColor(const CRGB& color) {
-    this->_eyeColor = color;
+bool AtomBabies::isPressed(void) {
+    return M5.Btn.isPressed();
 }
 
-void AtomBabies::setCheeksColor(const CRGB& color) {
-    this->_cheekColor = color;
+bool AtomBabies::wasPressed(void) {
+    return M5.Btn.wasPressed();
 }
 
 void AtomBabies::setBackgroundColor(const CRGB& color) {
