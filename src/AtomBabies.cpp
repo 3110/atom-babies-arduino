@@ -155,7 +155,7 @@ void AtomBabies::startBlink(void) {
 
 void AtomBabies::stopBlink(void) {
     this->_blinking = false;
-    delay(this->_blinkParam.interval);
+    delay(this->_blinkParam.open);
 }
 
 void AtomBabies::toggleBlink(void) {
