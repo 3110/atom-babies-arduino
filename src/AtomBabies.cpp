@@ -264,6 +264,7 @@ void AtomBabies::scrollDigits(const CRGB& color, uint16_t val,
     size_t n_digits = getDigit(val);
     uint8_t digit = 0;
     size_t m = 0;
+    bufPos = 0;
     clear();
     for (size_t d = 0; d < n_digits; ++d) {
         m = n_digits - (d + 1);
