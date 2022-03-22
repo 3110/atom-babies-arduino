@@ -16,8 +16,7 @@ void setup(void) {
     pinMode(PIR_INPUT_PIN, INPUT_PULLUP);
     babies.begin();
     babies.setOrientation(OrientationUpsideDown);
-    babies.setFace(FaceNormal);
-    babies.fillFace(FILL_COLOR);
+    babies.fill(FILL_COLOR);
 }
 
 void loop(void) {
@@ -28,13 +27,13 @@ void loop(void) {
             wasDetected = true;
             babies.bow();
             delay(1000);
-            babies.fillFace(FILL_COLOR);
+            babies.fill(FILL_COLOR);
         }
     } else {
         if (wasDetected) {
             SERIAL_PRINTLN("PIR: Got Away");
             wasDetected = false;
-            babies.fillFace(FILL_COLOR);
+            babies.fill(FILL_COLOR);
         }
     }
 }
