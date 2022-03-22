@@ -195,6 +195,7 @@ AtomBabies& AtomBabies::setBackgroundColor(const CRGB& color) {
 }
 
 void AtomBabies::display(void) {
+    clear();
     openEyes();
     setCheeks();
 }
