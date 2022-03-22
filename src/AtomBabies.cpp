@@ -111,6 +111,7 @@ AtomBabies::AtomBabies(FacePosition position, FaceOrientation orientation,
                        const CRGB& eyeColor, const CRGB& cheekColor,
                        const CRGB& backgroundColor)
     : _position(position),
+      _autoOrientation(true),
       _orientation(orientation),
       _eyeColor(eyeColor),
       _cheekColor(cheekColor),
@@ -125,6 +126,7 @@ AtomBabies::~AtomBabies(void) {
 
 bool AtomBabies::begin(void) {
     M5.begin(ENABLE_SERIAL, ENABLE_I2C, ENABLE_DISPLAY);
+    M5.IMU.Init();
     xTaskCreatePinnedToCore(blinkTask, BLINK_TASK_NAME, BLINK_TASK_STACK_DEPTH,
                             this, BLINK_TASK_PRIORITY, nullptr,
                             BLINK_TASK_CORE_ID);
@@ -134,6 +136,14 @@ bool AtomBabies::begin(void) {
 
 bool AtomBabies::update(void) {
     M5.update();
+    if (this->_autoOrientation) {
+        const FaceOrientation o = detectOrientation();
+        if (o != this->_orientation) {
+            clear();
+            this->_orientation = o;
+            display();
+        }
+    }
     return true;
 }
 
@@ -178,8 +188,22 @@ void AtomBabies::setBlinkParam(const BlinkParam& param) {
     this->_blinkParam = param;
 }
 
+bool AtomBabies::isAutoOrientation(void) const {
+    return this->_autoOrientation;
+}
+
+void AtomBabies::setAutoOrientation(bool autoOrientation) {
+    this->_autoOrientation = autoOrientation;
+}
+
+bool AtomBabies::toggleAutoOrientation(void) {
+    this->_autoOrientation = !this->_autoOrientation;
+    return this->_autoOrientation;
+}
+
 AtomBabies& AtomBabies::setOrientation(FaceOrientation orientation) {
     this->_orientation = orientation;
+    setAutoOrientation(false);
     return *this;
 }
 
@@ -284,6 +308,22 @@ void AtomBabies::scrollDigits(const CRGB& color, uint16_t val,
     }
     for (size_t x = 1; x <= WIDTH; ++x) {
         displayScrollBuffer(color, interval);
+    }
+}
+
+FaceOrientation AtomBabies::detectOrientation(void) {
+    float ax, ay, az;
+    M5.IMU.getAccelData(&ax, &ay, &az);
+    if (ay >= GRAVITY_THRESHOLD) {
+        return OrientationNormal;
+    } else if (ax >= GRAVITY_THRESHOLD) {
+        return OrientationRight;
+    } else if (ax <= -GRAVITY_THRESHOLD) {
+        return OrientationLeft;
+    } else if (ay <= -GRAVITY_THRESHOLD) {
+        return OrientationUpsideDown;
+    } else {
+        return this->_orientation;
     }
 }
 

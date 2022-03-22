@@ -49,6 +49,7 @@ public:
     static const BowParam DEFAULT_BOW;
 
     static const size_t N_POSITIONS = 2;
+    static constexpr float GRAVITY_THRESHOLD = 0.8;
 
     AtomBabies(FacePosition position = FaceNormal,
                FaceOrientation orientation = OrientationNormal,
@@ -72,6 +73,10 @@ public:
     virtual bool isBlinking(void) const;
     virtual void setBlinkParam(const BlinkParam& param);
 
+    virtual bool isAutoOrientation(void) const;
+    virtual void setAutoOrientation(bool autoOrientation);
+    virtual bool toggleAutoOrientation(void);
+
     virtual AtomBabies& setOrientation(FaceOrientation orientation);
     virtual AtomBabies& setFace(FacePosition position);
     virtual AtomBabies& setEyesColor(const CRGB& color);
@@ -93,6 +98,8 @@ public:
     virtual void scrollDigits(const CRGB& color, uint16_t val,
                               uint16_t interval);
 
+    virtual FaceOrientation detectOrientation(void);
+
     virtual void _doBlink(void);  // called from thread
 
 protected:
@@ -110,6 +117,7 @@ protected:
 
 private:
     FacePosition _position;
+    bool _autoOrientation;
     FaceOrientation _orientation;
     CRGB _eyeColor;
     CRGB _cheekColor;
