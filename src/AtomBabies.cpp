@@ -155,10 +155,15 @@ void AtomBabies::startBlink(void) {
 
 void AtomBabies::stopBlink(void) {
     this->_blinking = false;
+    delay(this->_blinkParam.interval);
 }
 
 void AtomBabies::toggleBlink(void) {
-    this->_blinking = !this->_blinking;
+    if (isBlinking()) {
+        stopBlink();
+    } else {
+        startBlink();
+    }
 }
 
 bool AtomBabies::isBlinking(void) const {
