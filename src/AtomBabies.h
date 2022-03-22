@@ -39,13 +39,16 @@ typedef struct {
 class AtomBabies {
 public:
     static const char VERSION[];
-    static const size_t N_POSITIONS = 2;
-    static const size_t MAX_POSITION = 25;
+    static const size_t WIDTH = 5;
+    static const size_t HEIGHT = 5;
+    static const size_t MAX_POSITION = WIDTH * HEIGHT;
     static const CRGB DEFAULT_EYE_COLOR;
     static const CRGB DEFAULT_CHEEK_COLOR;
     static const CRGB DEFAULT_BACKGROUND_COLOR;
     static const BlinkParam DEFAULT_BLINK;
     static const BowParam DEFAULT_BOW;
+
+    static const size_t N_POSITIONS = 2;
 
     AtomBabies(FacePosition position = FaceNormal,
                FaceOrientation orientation = OrientationNormal,
@@ -85,13 +88,15 @@ public:
     virtual bool isPressed(void);
     virtual bool wasPressed(void);
 
-    virtual void displayDigits(uint16_t val, const CRGB& color,
+    virtual void displayDigits(const CRGB& color, uint16_t val,
                                uint16_t interval);
+    virtual void scrollDigits(const CRGB& color, uint16_t val,
+                              uint16_t interval);
 
     virtual void _doBlink(void);  // called from thread
 
 protected:
-    virtual void displayDigit(uint8_t digit, const CRGB& color);
+    virtual void displayDigit(const CRGB& color, uint8_t digit);
 
     virtual void setEyes(const CRGB& color);
     virtual void setCheeks(const CRGB& color);
@@ -100,6 +105,8 @@ protected:
     virtual void setLEDs(const CRGB& color,
                          const uint8_t (&position)[N_POSITIONS]);
     virtual uint8_t getLEDPosition(uint8_t position);
+
+    virtual void displayScrollBuffer(const CRGB& color, uint16_t interval);
 
 private:
     FacePosition _position;

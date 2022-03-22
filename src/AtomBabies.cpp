@@ -77,6 +77,10 @@ const size_t DIGITS_SIZE[] = {
     ARRAY_SIZE(DIGIT9),
 };
 
+size_t bufPos = 0;
+const size_t SCROLL_BUFFER_SIZE = DIGITS_SIZE[8] * AtomBabies::WIDTH;
+uint8_t SCROLL_BUFFER[SCROLL_BUFFER_SIZE] = {0};
+
 const char AtomBabies::VERSION[] = ATOM_BABIES_VERSION;
 
 const CRGB AtomBabies::DEFAULT_EYE_COLOR(0x00, 0x64, 0x00);
@@ -238,24 +242,52 @@ bool AtomBabies::wasPressed(void) {
     return M5.Btn.wasPressed();
 }
 
-void AtomBabies::displayDigits(uint16_t val, const CRGB& color,
+void AtomBabies::displayDigits(const CRGB& color, uint16_t val,
                                uint16_t interval) {
-    size_t n = getDigit(val);
-    uint8_t digit;
-    for (size_t i = n; i != 0; --i) {
-        digit = (uint8_t)(val / pow(10, i - 1));
-        val %= (uint16_t)pow(10, i - 1);
+    size_t n_digits = getDigit(val);
+    uint8_t digit = 0;
+    size_t m = 0;
+    clear();
+    for (size_t d = 0; d < n_digits; ++d) {
+        m = n_digits - (d + 1);
+        digit = static_cast<uint8_t>(val / pow(10, m));
+        val %= static_cast<uint16_t>(pow(10, m));
+        displayDigit(color, digit);
+        delay(interval);
         clear();
         delay(interval);
-        displayDigit(digit, color);
-        delay(interval);
     }
-    clear();
-    delay(interval);
 }
 
-void AtomBabies::displayDigit(uint8_t digit, const CRGB& color) {
-    if (digit > 10) {
+void AtomBabies::scrollDigits(const CRGB& color, uint16_t val,
+                              uint16_t interval) {
+    size_t n_digits = getDigit(val);
+    uint8_t digit = 0;
+    size_t m = 0;
+    clear();
+    for (size_t d = 0; d < n_digits; ++d) {
+        m = n_digits - (d + 1);
+        digit = static_cast<uint8_t>(val / pow(10, m));
+        val %= static_cast<uint16_t>(pow(10, m));
+        for (size_t x = 1; x <= WIDTH; ++x) {
+            for (size_t p = 0; p < DIGITS_SIZE[digit]; ++p) {
+                if (DIGITS[digit][p] % WIDTH == x) {
+                    SCROLL_BUFFER[bufPos] =
+                        WIDTH + WIDTH * static_cast<uint8_t>(
+                                            (DIGITS[digit][p] - 1) / WIDTH);
+                    ++bufPos;
+                }
+            }
+            displayScrollBuffer(color, interval);
+        }
+    }
+    for (size_t x = 1; x <= WIDTH; ++x) {
+        displayScrollBuffer(color, interval);
+    }
+}
+
+void AtomBabies::displayDigit(const CRGB& color, uint8_t digit) {
+    if (digit >= 10) {
         return;
     }
     const uint8_t* pos = DIGITS[digit];
@@ -308,6 +340,34 @@ uint8_t AtomBabies::getLEDPosition(uint8_t position) {
         return 0;
     }
     return ORIENTATIONS[this->_orientation][position - 1];
+}
+
+void AtomBabies::displayScrollBuffer(const CRGB& color, uint16_t interval) {
+    // Display
+    for (size_t p = 0; p < bufPos; ++p) {
+        if (SCROLL_BUFFER[p] == 0) {
+            continue;
+        }
+        setLED(color, SCROLL_BUFFER[p]);
+    }
+    delay(interval);
+    // clear
+    for (size_t p = 0; p < bufPos; ++p) {
+        if (SCROLL_BUFFER[p] == 0) {
+            continue;
+        }
+        setLED(this->_backgroundColor, SCROLL_BUFFER[p]);
+    }
+    // scrool
+    for (size_t p = 0; p < bufPos; ++p) {
+        if (SCROLL_BUFFER[p] == 0) {
+            continue;
+        }
+        --SCROLL_BUFFER[p];
+        if (SCROLL_BUFFER[p] % WIDTH == 0) {
+            SCROLL_BUFFER[p] = 0;
+        }
+    }
 }
 
 }  // namespace M5Stack_AtomBabies
