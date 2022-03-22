@@ -359,7 +359,7 @@ void AtomBabies::displayScrollBuffer(const CRGB& color, uint16_t interval) {
         }
         setLED(this->_backgroundColor, SCROLL_BUFFER[p]);
     }
-    // scrool
+    // scroll
     for (size_t p = 0; p < bufPos; ++p) {
         if (SCROLL_BUFFER[p] == 0) {
             continue;
