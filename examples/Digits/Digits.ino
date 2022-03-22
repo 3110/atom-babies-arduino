@@ -3,7 +3,7 @@
 using namespace M5Stack_AtomBabies;
 
 AtomBabies babies;
-uint16_t count = 10;
+uint16_t count = 0;
 const CRGB DIGIT_COLOR(CRGB::Green);
 
 #define DISPLAY_SCROLL
