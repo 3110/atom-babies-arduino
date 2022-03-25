@@ -49,7 +49,7 @@ public:
     static const BowParam DEFAULT_BOW;
 
     static const size_t N_POSITIONS = 2;
-    static constexpr float GRAVITY_THRESHOLD = 0.8;
+    static constexpr float GRAVITY_THRESHOLD = 0.75;
 
     AtomBabies(FacePosition position = FaceNormal,
                FaceOrientation orientation = OrientationNormal,
