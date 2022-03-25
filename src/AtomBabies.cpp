@@ -54,6 +54,33 @@ const uint8_t ORIENTATIONS[][AtomBabies::MAX_POSITION] = {
      12, 11, 10, 9,  8,  7,  6,  5,  4,  3,  2,  1},  // Upside Down
 };
 
+const uint8_t DIGIT0[] = {2, 3, 4, 7, 9, 12, 14, 17, 19, 22, 23, 24};
+const uint8_t DIGIT1[] = {3, 7, 8, 13, 18, 22, 23, 24};
+const uint8_t DIGIT2[] = {2, 3, 4, 9, 12, 13, 14, 17, 22, 23, 24};
+const uint8_t DIGIT3[] = {2, 3, 4, 9, 12, 13, 14, 19, 22, 23, 24};
+const uint8_t DIGIT4[] = {2, 4, 7, 9, 12, 13, 14, 19, 24};
+const uint8_t DIGIT5[] = {2, 3, 4, 7, 12, 13, 14, 19, 22, 23, 24};
+const uint8_t DIGIT6[] = {2, 3, 4, 7, 12, 13, 14, 17, 19, 22, 23, 24};
+const uint8_t DIGIT7[] = {2, 3, 4, 9, 14, 19, 24};
+const uint8_t DIGIT8[] = {2, 3, 4, 7, 9, 12, 13, 14, 17, 19, 22, 23, 24};
+const uint8_t DIGIT9[] = {2, 3, 4, 7, 9, 12, 13, 14, 19, 22, 23, 24};
+
+const uint8_t* DIGITS[] = {DIGIT0, DIGIT1, DIGIT2, DIGIT3, DIGIT4,
+                           DIGIT5, DIGIT6, DIGIT7, DIGIT8, DIGIT9};
+
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
+
+const size_t DIGITS_SIZE[] = {
+    ARRAY_SIZE(DIGIT0), ARRAY_SIZE(DIGIT1), ARRAY_SIZE(DIGIT2),
+    ARRAY_SIZE(DIGIT3), ARRAY_SIZE(DIGIT4), ARRAY_SIZE(DIGIT5),
+    ARRAY_SIZE(DIGIT6), ARRAY_SIZE(DIGIT7), ARRAY_SIZE(DIGIT8),
+    ARRAY_SIZE(DIGIT9),
+};
+
+size_t bufPos = 0;
+const size_t SCROLL_BUFFER_SIZE = DIGITS_SIZE[8] * AtomBabies::WIDTH;
+uint8_t SCROLL_BUFFER[SCROLL_BUFFER_SIZE] = {0};
+
 const char AtomBabies::VERSION[] = ATOM_BABIES_VERSION;
 
 const CRGB AtomBabies::DEFAULT_EYE_COLOR(0x00, 0x64, 0x00);
@@ -72,10 +99,19 @@ const BowParam AtomBabies::DEFAULT_BOW = {
     500,  // after
 };
 
+size_t getDigit(uint16_t val) {
+    size_t digit = 1;
+    while (val /= 10) {
+        ++digit;
+    }
+    return digit;
+}
+
 AtomBabies::AtomBabies(FacePosition position, FaceOrientation orientation,
                        const CRGB& eyeColor, const CRGB& cheekColor,
                        const CRGB& backgroundColor)
     : _position(position),
+      _autoOrientation(true),
       _orientation(orientation),
       _eyeColor(eyeColor),
       _cheekColor(cheekColor),
@@ -90,6 +126,7 @@ AtomBabies::~AtomBabies(void) {
 
 bool AtomBabies::begin(void) {
     M5.begin(ENABLE_SERIAL, ENABLE_I2C, ENABLE_DISPLAY);
+    M5.IMU.Init();
     xTaskCreatePinnedToCore(blinkTask, BLINK_TASK_NAME, BLINK_TASK_STACK_DEPTH,
                             this, BLINK_TASK_PRIORITY, nullptr,
                             BLINK_TASK_CORE_ID);
@@ -99,6 +136,14 @@ bool AtomBabies::begin(void) {
 
 bool AtomBabies::update(void) {
     M5.update();
+    if (this->_autoOrientation) {
+        const FaceOrientation o = detectOrientation();
+        if (o != this->_orientation) {
+            clear();
+            this->_orientation = o;
+            display();
+        }
+    }
     return true;
 }
 
@@ -124,10 +169,15 @@ void AtomBabies::startBlink(void) {
 
 void AtomBabies::stopBlink(void) {
     this->_blinking = false;
+    delay(this->_blinkParam.open);
 }
 
 void AtomBabies::toggleBlink(void) {
-    this->_blinking = !this->_blinking;
+    if (isBlinking()) {
+        stopBlink();
+    } else {
+        startBlink();
+    }
 }
 
 bool AtomBabies::isBlinking(void) const {
@@ -138,54 +188,154 @@ void AtomBabies::setBlinkParam(const BlinkParam& param) {
     this->_blinkParam = param;
 }
 
-void AtomBabies::setOrientation(FaceOrientation orientation) {
-    clearFace();
+bool AtomBabies::isAutoOrientation(void) const {
+    return this->_autoOrientation;
+}
+
+void AtomBabies::setAutoOrientation(bool autoOrientation) {
+    this->_autoOrientation = autoOrientation;
+}
+
+bool AtomBabies::toggleAutoOrientation(void) {
+    this->_autoOrientation = !this->_autoOrientation;
+    return this->_autoOrientation;
+}
+
+AtomBabies& AtomBabies::setOrientation(FaceOrientation orientation) {
     this->_orientation = orientation;
-    setFace(this->_position);
+    setAutoOrientation(false);
+    return *this;
 }
 
-void AtomBabies::setFace(FacePosition position) {
-    clearFace();
+AtomBabies& AtomBabies::setFace(FacePosition position) {
     this->_position = position;
-    setEyes(this->_eyeColor);
-    setCheeks(this->_cheekColor);
+    return *this;
 }
 
-void AtomBabies::clearFace(bool partial) {
+AtomBabies& AtomBabies::setEyesColor(const CRGB& color) {
+    this->_eyeColor = color;
+    return *this;
+}
+
+AtomBabies& AtomBabies::setCheeksColor(const CRGB& color) {
+    this->_cheekColor = color;
+    return *this;
+}
+
+AtomBabies& AtomBabies::setBackgroundColor(const CRGB& color) {
+    this->_backgroundColor = color;
+    return *this;
+}
+
+void AtomBabies::display(void) {
+    clear();
+    openEyes();
+    setCheeks();
+}
+
+void AtomBabies::clear(bool partial) {
     if (partial) {
         setEyes(this->_backgroundColor);
         setCheeks(this->_backgroundColor);
     } else {
-        fillFace(this->_backgroundColor);
+        fill(this->_backgroundColor);
     }
 }
 
-void AtomBabies::fillFace(const CRGB& color) {
+void AtomBabies::fill(const CRGB& color) {
     M5.dis.fillpix(color);
 }
 
 void AtomBabies::bow(bool deep) {
-    setFace(FaceNormal);
+    setFace(FaceNormal).display();
     delay(this->_bowParam.before);
-    setFace(deep ? FaceBottom : FaceDown);
+    setFace(deep ? FaceBottom : FaceDown).display();
     delay(this->_bowParam.after);
-    setFace(FaceNormal);
+    setFace(FaceNormal).display();
 }
 
 void AtomBabies::setBowParam(const BowParam& param) {
     this->_bowParam = param;
 }
 
-void AtomBabies::setEyesColor(const CRGB& color) {
-    this->_eyeColor = color;
+bool AtomBabies::isPressed(void) {
+    return M5.Btn.isPressed();
 }
 
-void AtomBabies::setCheeksColor(const CRGB& color) {
-    this->_cheekColor = color;
+bool AtomBabies::wasPressed(void) {
+    return M5.Btn.wasPressed();
 }
 
-void AtomBabies::setBackgroundColor(const CRGB& color) {
-    this->_backgroundColor = color;
+void AtomBabies::displayDigits(const CRGB& color, uint16_t val,
+                               uint16_t interval) {
+    size_t n_digits = getDigit(val);
+    uint8_t digit = 0;
+    size_t m = 0;
+    clear();
+    for (size_t d = 0; d < n_digits; ++d) {
+        m = n_digits - (d + 1);
+        digit = static_cast<uint8_t>(val / pow(10, m));
+        val %= static_cast<uint16_t>(pow(10, m));
+        displayDigit(color, digit);
+        delay(interval);
+        clear();
+        delay(interval);
+    }
+}
+
+void AtomBabies::scrollDigits(const CRGB& color, uint16_t val,
+                              uint16_t interval) {
+    size_t n_digits = getDigit(val);
+    uint8_t digit = 0;
+    size_t m = 0;
+    bufPos = 0;
+    clear();
+    for (size_t d = 0; d < n_digits; ++d) {
+        m = n_digits - (d + 1);
+        digit = static_cast<uint8_t>(val / pow(10, m));
+        val %= static_cast<uint16_t>(pow(10, m));
+        for (size_t x = 1; x <= WIDTH; ++x) {
+            for (size_t p = 0; p < DIGITS_SIZE[digit]; ++p) {
+                if (DIGITS[digit][p] % WIDTH == x) {
+                    SCROLL_BUFFER[bufPos] =
+                        WIDTH + WIDTH * static_cast<uint8_t>(
+                                            (DIGITS[digit][p] - 1) / WIDTH);
+                    ++bufPos;
+                }
+            }
+            displayScrollBuffer(color, interval);
+        }
+    }
+    for (size_t x = 1; x <= WIDTH; ++x) {
+        displayScrollBuffer(color, interval);
+    }
+}
+
+FaceOrientation AtomBabies::detectOrientation(void) {
+    float ax, ay, az;
+    M5.IMU.getAccelData(&ax, &ay, &az);
+    if (ay >= GRAVITY_THRESHOLD) {
+        return OrientationNormal;
+    } else if (ax >= GRAVITY_THRESHOLD) {
+        return OrientationRight;
+    } else if (ax <= -GRAVITY_THRESHOLD) {
+        return OrientationLeft;
+    } else if (ay <= -GRAVITY_THRESHOLD) {
+        return OrientationUpsideDown;
+    } else {
+        return this->_orientation;
+    }
+}
+
+void AtomBabies::displayDigit(const CRGB& color, uint8_t digit) {
+    if (digit >= 10) {
+        return;
+    }
+    const uint8_t* pos = DIGITS[digit];
+    const size_t size = DIGITS_SIZE[digit];
+    for (size_t p = 0; p < size; ++p) {
+        setLED(color, pos[p]);
+    }
 }
 
 void AtomBabies::_doBlink(void) {
@@ -231,6 +381,34 @@ uint8_t AtomBabies::getLEDPosition(uint8_t position) {
         return 0;
     }
     return ORIENTATIONS[this->_orientation][position - 1];
+}
+
+void AtomBabies::displayScrollBuffer(const CRGB& color, uint16_t interval) {
+    // Display
+    for (size_t p = 0; p < bufPos; ++p) {
+        if (SCROLL_BUFFER[p] == 0) {
+            continue;
+        }
+        setLED(color, SCROLL_BUFFER[p]);
+    }
+    delay(interval);
+    // clear
+    for (size_t p = 0; p < bufPos; ++p) {
+        if (SCROLL_BUFFER[p] == 0) {
+            continue;
+        }
+        setLED(this->_backgroundColor, SCROLL_BUFFER[p]);
+    }
+    // scroll
+    for (size_t p = 0; p < bufPos; ++p) {
+        if (SCROLL_BUFFER[p] == 0) {
+            continue;
+        }
+        --SCROLL_BUFFER[p];
+        if (SCROLL_BUFFER[p] % WIDTH == 0) {
+            SCROLL_BUFFER[p] = 0;
+        }
+    }
 }
 
 }  // namespace M5Stack_AtomBabies

@@ -39,13 +39,17 @@ typedef struct {
 class AtomBabies {
 public:
     static const char VERSION[];
-    static const size_t N_POSITIONS = 2;
-    static const size_t MAX_POSITION = 25;
+    static const size_t WIDTH = 5;
+    static const size_t HEIGHT = 5;
+    static const size_t MAX_POSITION = WIDTH * HEIGHT;
     static const CRGB DEFAULT_EYE_COLOR;
     static const CRGB DEFAULT_CHEEK_COLOR;
     static const CRGB DEFAULT_BACKGROUND_COLOR;
     static const BlinkParam DEFAULT_BLINK;
     static const BowParam DEFAULT_BOW;
+
+    static const size_t N_POSITIONS = 2;
+    static constexpr float GRAVITY_THRESHOLD = 0.8;
 
     AtomBabies(FacePosition position = FaceNormal,
                FaceOrientation orientation = OrientationNormal,
@@ -69,21 +73,38 @@ public:
     virtual bool isBlinking(void) const;
     virtual void setBlinkParam(const BlinkParam& param);
 
-    virtual void setOrientation(FaceOrientation orientation);
-    virtual void setFace(FacePosition position);
-    virtual void clearFace(bool partial = false);
-    virtual void fillFace(const CRGB& color);
+    virtual bool isAutoOrientation(void) const;
+    virtual void setAutoOrientation(bool autoOrientation);
+    virtual bool toggleAutoOrientation(void);
+
+    virtual AtomBabies& setOrientation(FaceOrientation orientation);
+    virtual AtomBabies& setFace(FacePosition position);
+    virtual AtomBabies& setEyesColor(const CRGB& color);
+    virtual AtomBabies& setCheeksColor(const CRGB& color);
+    virtual AtomBabies& setBackgroundColor(const CRGB& color);
+
+    virtual void display(void);
+    virtual void clear(bool partial = false);
+    virtual void fill(const CRGB& color);
 
     virtual void bow(bool deep = false);
     virtual void setBowParam(const BowParam& param);
 
-    virtual void setEyesColor(const CRGB& color);
-    virtual void setCheeksColor(const CRGB& color);
-    virtual void setBackgroundColor(const CRGB& color);
+    virtual bool isPressed(void);
+    virtual bool wasPressed(void);
+
+    virtual void displayDigits(const CRGB& color, uint16_t val,
+                               uint16_t interval);
+    virtual void scrollDigits(const CRGB& color, uint16_t val,
+                              uint16_t interval);
+
+    virtual FaceOrientation detectOrientation(void);
 
     virtual void _doBlink(void);  // called from thread
 
 protected:
+    virtual void displayDigit(const CRGB& color, uint8_t digit);
+
     virtual void setEyes(const CRGB& color);
     virtual void setCheeks(const CRGB& color);
 
@@ -92,8 +113,11 @@ protected:
                          const uint8_t (&position)[N_POSITIONS]);
     virtual uint8_t getLEDPosition(uint8_t position);
 
+    virtual void displayScrollBuffer(const CRGB& color, uint16_t interval);
+
 private:
     FacePosition _position;
+    bool _autoOrientation;
     FaceOrientation _orientation;
     CRGB _eyeColor;
     CRGB _cheekColor;

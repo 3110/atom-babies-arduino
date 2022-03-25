@@ -7,7 +7,7 @@ uint32_t bowCount = 0;
 
 void setup(void) {
     babies.begin();
-    babies.setOrientation(OrientationUpsideDown);
+    babies.setOrientation(OrientationUpsideDown).display();
     babies.startBlink();
 }
 

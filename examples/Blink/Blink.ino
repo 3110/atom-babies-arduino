@@ -6,7 +6,7 @@ AtomBabies babies;
 
 void setup(void) {
     babies.begin();
-    babies.setOrientation(OrientationUpsideDown);
+    babies.setOrientation(OrientationUpsideDown).display();
 }
 
 void loop(void) {
