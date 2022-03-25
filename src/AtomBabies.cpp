@@ -131,19 +131,13 @@ bool AtomBabies::begin(void) {
                             this, BLINK_TASK_PRIORITY, nullptr,
                             BLINK_TASK_CORE_ID);
     SERIAL_PRINTF_LN("ATOM Babies v%s", VERSION);
+    updateOrientation();
     return true;
 }
 
 bool AtomBabies::update(void) {
     M5.update();
-    if (this->_autoOrientation) {
-        const FaceOrientation o = detectOrientation();
-        if (o != this->_orientation) {
-            clear();
-            this->_orientation = o;
-            display();
-        }
-    }
+    updateOrientation();
     return true;
 }
 
@@ -186,6 +180,19 @@ bool AtomBabies::isBlinking(void) const {
 
 void AtomBabies::setBlinkParam(const BlinkParam& param) {
     this->_blinkParam = param;
+}
+
+bool AtomBabies::updateOrientation(void) {
+    if (this->_autoOrientation) {
+        const FaceOrientation o = detectOrientation();
+        if (o != this->_orientation) {
+            clear();
+            this->_orientation = o;
+            display();
+            return true;
+        }
+    }
+    return false;
 }
 
 bool AtomBabies::isAutoOrientation(void) const {

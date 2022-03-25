@@ -73,6 +73,7 @@ public:
     virtual bool isBlinking(void) const;
     virtual void setBlinkParam(const BlinkParam& param);
 
+    virtual bool updateOrientation(void);
     virtual bool isAutoOrientation(void) const;
     virtual void setAutoOrientation(bool autoOrientation);
     virtual bool toggleAutoOrientation(void);
