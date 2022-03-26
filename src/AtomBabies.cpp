@@ -118,10 +118,19 @@ AtomBabies::AtomBabies(FacePosition position, FaceOrientation orientation,
       _backgroundColor(backgroundColor),
       _blinking(false),
       _blinkParam(DEFAULT_BLINK),
-      _bowParam(DEFAULT_BOW) {
+      _bowParam(DEFAULT_BOW),
+      _n_plugins(0),
+      _plugins{0} {
 }
 
 AtomBabies::~AtomBabies(void) {
+    for (size_t p = 0; p < MAX_PLUGINS; ++p) {
+        if (this->_plugins[p] != nullptr) {
+            delete this->_plugins[p];
+            this->_plugins[p] = nullptr;
+        }
+    }
+    this->_n_plugins = 0;
 }
 
 bool AtomBabies::begin(void) {
@@ -132,12 +141,18 @@ bool AtomBabies::begin(void) {
                             BLINK_TASK_CORE_ID);
     SERIAL_PRINTF_LN("ATOM Babies v%s", VERSION);
     updateOrientation();
+    for (size_t p = 0; p < this->_n_plugins; ++p) {
+        this->_plugins[p]->begin();
+    }
     return true;
 }
 
 bool AtomBabies::update(void) {
     M5.update();
     updateOrientation();
+    for (size_t p = 0; p < this->_n_plugins; ++p) {
+        this->_plugins[p]->update();
+    }
     return true;
 }
 
@@ -343,6 +358,16 @@ void AtomBabies::displayDigit(const CRGB& color, uint8_t digit) {
     for (size_t p = 0; p < size; ++p) {
         setLED(color, pos[p]);
     }
+}
+
+bool AtomBabies::addPlugin(AbstractAtomBabiesPlugin* plugin) {
+    if (this->_n_plugins + 1 >= MAX_PLUGINS) {
+        return false;
+    }
+    this->_plugins[this->_n_plugins] = plugin;
+    ++this->_n_plugins;
+    SERIAL_PRINTF_LN("Adding %s Plugin", plugin->getName());
+    return true;
 }
 
 void AtomBabies::_doBlink(void) {

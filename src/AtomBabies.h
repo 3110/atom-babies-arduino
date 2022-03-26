@@ -4,6 +4,7 @@
 #include <M5Atom.h>
 
 #include "Debug.h"
+#include "plugins/AbstractAtomBabiesPlugin.h"
 
 namespace M5Stack_AtomBabies {
 
@@ -50,6 +51,8 @@ public:
 
     static constexpr size_t N_POSITIONS = 2;
     static constexpr float GRAVITY_THRESHOLD = 0.75;
+
+    static constexpr size_t MAX_PLUGINS = 10;
 
     AtomBabies(FacePosition position = FaceNormal,
                FaceOrientation orientation = OrientationNormal,
@@ -100,6 +103,8 @@ public:
     virtual void scrollDigits(const CRGB& color, uint16_t val,
                               uint16_t interval);
 
+    virtual bool addPlugin(AbstractAtomBabiesPlugin* plugin);
+
     virtual void _doBlink(void);  // called from thread
 
 protected:
@@ -125,6 +130,9 @@ private:
     bool _blinking;
     BlinkParam _blinkParam;
     BowParam _bowParam;
+
+    size_t _n_plugins;
+    AbstractAtomBabiesPlugin* _plugins[MAX_PLUGINS];
 };
 
 }  // namespace M5Stack_AtomBabies
