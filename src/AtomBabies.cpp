@@ -4,14 +4,14 @@
 
 namespace M5Stack_AtomBabies {
 
-const bool ENABLE_SERIAL = true;
-const bool ENABLE_I2C = true;
-const bool ENABLE_DISPLAY = true;
+constexpr bool ENABLE_SERIAL = true;
+constexpr bool ENABLE_I2C = true;
+constexpr bool ENABLE_DISPLAY = true;
 
-const BaseType_t BLINK_TASK_CORE_ID = 1;
-const uint32_t BLINK_TASK_STACK_DEPTH = 4096;
-const UBaseType_t BLINK_TASK_PRIORITY = 1;
-const char BLINK_TASK_NAME[] = "BlinkTask";
+constexpr BaseType_t BLINK_TASK_CORE_ID = 1;
+constexpr uint32_t BLINK_TASK_STACK_DEPTH = 4096;
+constexpr UBaseType_t BLINK_TASK_PRIORITY = 1;
+constexpr char BLINK_TASK_NAME[] = "BlinkTask";
 
 void blinkTask(void* arg) {
     AtomBabies* babies = reinterpret_cast<AtomBabies*>(arg);
@@ -81,7 +81,7 @@ size_t bufPos = 0;
 const size_t SCROLL_BUFFER_SIZE = DIGITS_SIZE[8] * AtomBabies::WIDTH;
 uint8_t SCROLL_BUFFER[SCROLL_BUFFER_SIZE] = {0};
 
-const char AtomBabies::VERSION[] = ATOM_BABIES_VERSION;
+constexpr char AtomBabies::VERSION[] = ATOM_BABIES_VERSION;
 
 const CRGB AtomBabies::DEFAULT_EYE_COLOR(0x00, 0x64, 0x00);
 const CRGB AtomBabies::DEFAULT_CHEEK_COLOR(0x64, 0x00, 0x00);
