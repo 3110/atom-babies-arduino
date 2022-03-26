@@ -38,17 +38,17 @@ typedef struct {
 
 class AtomBabies {
 public:
-    static const char VERSION[];
-    static const size_t WIDTH = 5;
-    static const size_t HEIGHT = 5;
-    static const size_t MAX_POSITION = WIDTH * HEIGHT;
-    static const CRGB DEFAULT_EYE_COLOR;
-    static const CRGB DEFAULT_CHEEK_COLOR;
-    static const CRGB DEFAULT_BACKGROUND_COLOR;
-    static const BlinkParam DEFAULT_BLINK;
-    static const BowParam DEFAULT_BOW;
+    static constexpr char VERSION[];
+    static constexpr size_t WIDTH = 5;
+    static constexpr size_t HEIGHT = 5;
+    static constexpr size_t MAX_POSITION = WIDTH * HEIGHT;
+    static constexpr CRGB DEFAULT_EYE_COLOR;
+    static constexpr CRGB DEFAULT_CHEEK_COLOR;
+    static constexpr CRGB DEFAULT_BACKGROUND_COLOR;
+    static constexpr BlinkParam DEFAULT_BLINK;
+    static constexpr BowParam DEFAULT_BOW;
 
-    static const size_t N_POSITIONS = 2;
+    static constexpr size_t N_POSITIONS = 2;
     static constexpr float GRAVITY_THRESHOLD = 0.75;
 
     AtomBabies(FacePosition position = FaceNormal,
