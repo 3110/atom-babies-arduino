@@ -77,6 +77,7 @@ public:
     virtual bool isAutoOrientation(void) const;
     virtual void setAutoOrientation(bool autoOrientation);
     virtual bool toggleAutoOrientation(void);
+    virtual FaceOrientation detectOrientation(void);
 
     virtual AtomBabies& setOrientation(FaceOrientation orientation);
     virtual AtomBabies& setFace(FacePosition position);
@@ -98,8 +99,6 @@ public:
                                uint16_t interval);
     virtual void scrollDigits(const CRGB& color, uint16_t val,
                               uint16_t interval);
-
-    virtual FaceOrientation detectOrientation(void);
 
     virtual void _doBlink(void);  // called from thread
 
