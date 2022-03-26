@@ -103,7 +103,7 @@ public:
     virtual void scrollDigits(const CRGB& color, uint16_t val,
                               uint16_t interval);
 
-    virtual bool addPlugin(AbstractAtomBabiesPlugin* plugin);
+    virtual bool addPlugin(AbstractAtomBabiesPlugin& plugin);
 
     virtual void _doBlink(void);  // called from thread
 

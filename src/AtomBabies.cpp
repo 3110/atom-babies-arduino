@@ -125,10 +125,7 @@ AtomBabies::AtomBabies(FacePosition position, FaceOrientation orientation,
 
 AtomBabies::~AtomBabies(void) {
     for (size_t p = 0; p < MAX_PLUGINS; ++p) {
-        if (this->_plugins[p] != nullptr) {
-            delete this->_plugins[p];
-            this->_plugins[p] = nullptr;
-        }
+        this->_plugins[p] = nullptr;
     }
     this->_n_plugins = 0;
 }
@@ -142,7 +139,7 @@ bool AtomBabies::begin(void) {
     SERIAL_PRINTF_LN("ATOM Babies v%s", VERSION);
     updateOrientation();
     for (size_t p = 0; p < this->_n_plugins; ++p) {
-        this->_plugins[p]->begin();
+        this->_plugins[p]->begin(*this);
     }
     return true;
 }
@@ -151,7 +148,7 @@ bool AtomBabies::update(void) {
     M5.update();
     updateOrientation();
     for (size_t p = 0; p < this->_n_plugins; ++p) {
-        this->_plugins[p]->update();
+        this->_plugins[p]->update(*this);
     }
     return true;
 }
@@ -360,13 +357,13 @@ void AtomBabies::displayDigit(const CRGB& color, uint8_t digit) {
     }
 }
 
-bool AtomBabies::addPlugin(AbstractAtomBabiesPlugin* plugin) {
+bool AtomBabies::addPlugin(AbstractAtomBabiesPlugin& plugin) {
     if (this->_n_plugins + 1 >= MAX_PLUGINS) {
         return false;
     }
-    this->_plugins[this->_n_plugins] = plugin;
+    this->_plugins[this->_n_plugins] = &plugin;
     ++this->_n_plugins;
-    SERIAL_PRINTF_LN("Adding %s Plugin", plugin->getName());
+    SERIAL_PRINTF_LN("Adding %s Plugin", plugin.getName());
     return true;
 }
 
