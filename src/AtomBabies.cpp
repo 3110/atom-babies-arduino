@@ -198,9 +198,7 @@ bool AtomBabies::updateOrientation(void) {
     if (this->_autoOrientation) {
         const FaceOrientation o = detectOrientation();
         if (o != this->_orientation) {
-            clear();
             this->_orientation = o;
-            display();
             return true;
         }
     }
