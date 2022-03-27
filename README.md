@@ -75,6 +75,68 @@ void loop(void) {
 }
 ```
 
+### プラグインの実装
+
+Hat や Unit の機能を使って実装するために，プラグインの機構を用意しました。
+`plugins/AbstractAtomBabiesPlugin.h`をインクルードし，`AbstractAtomBabiesPlugin`を継承したクラスを実装してください。
+
+実装例：`SamplePlugin.h`
+
+```cpp
+#pragma once
+
+#include "plugins/AbstractAtomBabiesPlugin.h"
+
+namespace M5Stack_AtomBabies {
+
+class SamplePlugin : public AbstractAtomBabiesPlugin {
+public:
+    SamplePlugin(void) {
+    }
+    virtual ~SamplePlugin(void) {
+    }
+
+    // babies.setup()から呼び出される
+    virtual bool begin(AtomBabies& babies) {
+        return true;
+    }
+
+    // babies.update()から呼び出される
+    virtual bool update(AtomBabies& babies) {
+        return true;
+    }
+
+    virtual const char* getName(void) const {
+        return "Sample";
+    }
+};
+
+}  // namespace M5Stack_AtomBabies
+```
+
+実装したプラグインは`AtomBabies::begin()`を呼び出す前に`AtomBabies::addPlugin()`に渡します。追加できるプラグインの数は今のところ 10（`AtomBabies::MAX_PLUGINS`）で，追加した順に呼び出されます。
+
+```cpp
+#include "AtomBabies.h"
+#include "SamplePlugin.h"
+
+using namespace M5Stack_AtomBabies;
+
+AtomBabies babies;
+SamplePlugin sample;
+
+void setup(void) {
+    babies.addPlugin(sample);
+    babies.begin(); // sample.begin(babies)が呼ばれる
+}
+
+void loop(void) {
+    babies.update(); // sample.update(babies)が呼ばれる
+}
+```
+
+具体的な実装例は`plugins/PIR.[h|cpp]`や，これらを使ったサンプル`Greeting`を参照してください。
+
 ## サンプルの説明
 
 ### すべての向きですべての顔を表示する（`AllFaces`）
