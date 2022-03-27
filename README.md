@@ -114,6 +114,15 @@ PIR Hat が胴体となるため，顔の向きは`OrientationUpsideDown`にし�
 PIR は Passive pyroelectric infrared detector（受動焦電型赤外線検出器）の略で，人間が発する赤外線を検知し，目の前にいるかを判断します。
 PIR Hat の仕様で，いったん検知した後，次に検知するまでに 2 秒間の遅れがあります。
 
+### 頭をなでると喜ぶ（`Happy`）
+
+<p align="center">
+<a href="https://youtu.be/mfhnQ5W6wxA"><img src="https://img.youtube.com/vi/mfhnQ5W6wxA/0.jpg" width="480"/></a><br>
+ATOM Babies:なでると喜ぶ（YouTube）
+</p>
+
+頭をなでると喜びます。試す場合は Hat を付けた状態で底面を固定しておいてください。
+
 ## 参考
 
 - [Arduino IDE 1](https://docs.arduino.cc/software/ide-v1)
