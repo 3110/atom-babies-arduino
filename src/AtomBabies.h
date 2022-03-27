@@ -91,6 +91,8 @@ public:
     virtual void display(void);
     virtual void clear(bool partial = false);
     virtual void fill(const CRGB& color);
+    virtual void displayData(const CRGB& color, const uint8_t pos[],
+                             size_t len);
 
     virtual void bow(bool deep = false);
     virtual void setBowParam(const BowParam& param);

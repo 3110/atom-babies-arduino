@@ -265,6 +265,13 @@ void AtomBabies::fill(const CRGB& color) {
     M5.dis.fillpix(color);
 }
 
+void AtomBabies::displayData(const CRGB& color, const uint8_t pos[],
+                             size_t len) {
+    for (size_t p = 0; p < len; ++p) {
+        setLED(color, pos[p]);
+    }
+}
+
 void AtomBabies::bow(bool deep) {
     setFace(FaceNormal).display();
     delay(this->_bowParam.before);
@@ -352,9 +359,7 @@ void AtomBabies::displayDigit(const CRGB& color, uint8_t digit) {
     }
     const uint8_t* pos = DIGITS[digit];
     const size_t size = DIGITS_SIZE[digit];
-    for (size_t p = 0; p < size; ++p) {
-        setLED(color, pos[p]);
-    }
+    displayData(color, pos, size);
 }
 
 bool AtomBabies::addPlugin(AbstractAtomBabiesPlugin& plugin) {
@@ -400,9 +405,7 @@ void AtomBabies::setLED(const CRGB& color, uint8_t position) {
 
 void AtomBabies::setLEDs(const CRGB& color,
                          const uint8_t (&position)[N_POSITIONS]) {
-    for (size_t i = 0; i < N_POSITIONS; ++i) {
-        setLED(color, position[i]);
-    }
+    displayData(color, position, N_POSITIONS);
 }
 
 uint8_t AtomBabies::getLEDPosition(uint8_t position) {
