@@ -22,7 +22,7 @@ ATOM Babies は M5Stack 社の<a href="https://shop.m5stack.com/collections/atom
 
 ### Arduino IDE
 
-[https://github.com/3110/atom-babies-arduino/archive/refs/tags/v0.0.4.zip](https://github.com/3110/atom-babies-arduino/archive/refs/tags/v0.0.4.zip) をダウンロードし，メニューの「スケッチ」-「ライブラリをインクルード」-「.ZIP 形式のライブラリをインストール...」を選択して ZIP ファイルを読み込みます。読み込み後，念のために Arduino IDE を再起動してください。
+[https://github.com/3110/atom-babies-arduino/archive/refs/tags/v0.1.0.zip](https://github.com/3110/atom-babies-arduino/archive/refs/tags/v0.1.0.zip) をダウンロードし，メニューの「スケッチ」-「ライブラリをインクルード」-「.ZIP 形式のライブラリをインストール...」を選択して ZIP ファイルを読み込みます。読み込み後，念のために Arduino IDE を再起動してください。
 
 サンプルはメニューの「ファイル」-「スケッチ例」にある「カスタムライブラリのスケッチ例」から「ATOM Babies」を選択し，「AllFaces」「Blink」「Bow」「Greeting」のいずれかを選びます。
 
