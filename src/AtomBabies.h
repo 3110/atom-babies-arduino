@@ -51,6 +51,7 @@ public:
 
     static constexpr size_t N_POSITIONS = 2;
     static constexpr float GRAVITY_THRESHOLD = 0.75;
+    static constexpr float DEFAULT_TOUCH_THRESHOLD = 0.3;
 
     static constexpr size_t MAX_PLUGINS = 10;
 
@@ -104,6 +105,8 @@ public:
                                uint16_t interval);
     virtual void scrollDigits(const CRGB& color, uint16_t val,
                               uint16_t interval);
+
+    virtual bool isTouched(float threthold = DEFAULT_TOUCH_THRESHOLD);
 
     virtual bool addPlugin(AbstractAtomBabiesPlugin& plugin);
 
