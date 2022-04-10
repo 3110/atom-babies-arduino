@@ -16,34 +16,74 @@ BowParam	KEYWORD1
 #######################################
 begin	KEYWORD2
 update	KEYWORD2
+
 openEyes	KEYWORD2
 closeEyes	KEYWORD2
+
 setCheeks	KEYWORD2
 clearCheeks	KEYWORD2
+
 startBlink	KEYWORD2
 stopBlink	KEYWORD2
 toggleBlink	KEYWORD2
 isBlinking	KEYWORD2
 setBlinkParam	KEYWORD2
+
+updateOrientation	KEYWORD2
+isAutoOrientation	KEYWORD2
+setAutoOrientation	KEYWORD2
+toggleAutoOrientation	KEYWORD2
+detectOrientation	KEYWORD2
+
 setOrientation	KEYWORD2
 setFace	KEYWORD2
-clearFace	KEYWORD2
-fillFace	KEYWORD2
+setEyesColor	KEYWORD2
+setCheeksColor	KEYWORD2
+setBackgroundColor	KEYWORD2
+
+display	KEYWORD2
+clear	KEYWORD2
+fill	KEYWORD2
+displayData	KEYWORD2
+
 bow	KEYWORD2
 setBowParam	KEYWORD2
+
+isPressed	KEYWORD2
+wasPressed	KEYWORD2
+
+displayDigits	KEYWORD2
+scrollDigits	KEYWORD2
+
+isTouched	KEYWORD2
+
+addPlugin	KEYWORD2
+
 _doBlink	KEYWORD2
-setLED	KEYWORD2
-setLEDs	KEYWORD2
+
+displayDigit	KEYWORD2
+
 setEyes	KEYWORD2
 setCheeks	KEYWORD2
+
+setLED	KEYWORD2
+setLEDs	KEYWORD2
+
 getLEDPosition	KEYWORD2
+
+displayScrollBuffer	setEyes	KEYWORD2
 
 ######################################
 # Constants (LITERAL1)
 #######################################
 VERSION	LITERAL1
+WIDTH	LITERAL1
+HEIGHT	LITERAL1
 N_POSITIONS LITERAL1
 MAX_POSITION	LITERAL1
+MAX_PLUGINS	LITERAL1
+GRAVITY_THRESHOLD	LITERAL1
+DEFAULT_TOUCH_THRESHOLD	LITERAL1
 DEFAULT_EYE_COLOR	LITERAL1
 DEFAULT_CHEEK_COLOR	LITERAL1
 DEFAULT_BACKGROUND_COLOR	LITERAL1

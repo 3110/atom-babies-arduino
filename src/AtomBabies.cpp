@@ -4,14 +4,14 @@
 
 namespace M5Stack_AtomBabies {
 
-const bool ENABLE_SERIAL = true;
-const bool ENABLE_I2C = true;
-const bool ENABLE_DISPLAY = true;
+constexpr bool ENABLE_SERIAL = true;
+constexpr bool ENABLE_I2C = true;
+constexpr bool ENABLE_DISPLAY = true;
 
-const BaseType_t BLINK_TASK_CORE_ID = 1;
-const uint32_t BLINK_TASK_STACK_DEPTH = 4096;
-const UBaseType_t BLINK_TASK_PRIORITY = 1;
-const char BLINK_TASK_NAME[] = "BlinkTask";
+constexpr BaseType_t BLINK_TASK_CORE_ID = 1;
+constexpr uint32_t BLINK_TASK_STACK_DEPTH = 4096;
+constexpr UBaseType_t BLINK_TASK_PRIORITY = 1;
+constexpr char BLINK_TASK_NAME[] = "BlinkTask";
 
 void blinkTask(void* arg) {
     AtomBabies* babies = reinterpret_cast<AtomBabies*>(arg);
@@ -81,7 +81,7 @@ size_t bufPos = 0;
 const size_t SCROLL_BUFFER_SIZE = DIGITS_SIZE[8] * AtomBabies::WIDTH;
 uint8_t SCROLL_BUFFER[SCROLL_BUFFER_SIZE] = {0};
 
-const char AtomBabies::VERSION[] = ATOM_BABIES_VERSION;
+constexpr char AtomBabies::VERSION[] = ATOM_BABIES_VERSION;
 
 const CRGB AtomBabies::DEFAULT_EYE_COLOR(0x00, 0x64, 0x00);
 const CRGB AtomBabies::DEFAULT_CHEEK_COLOR(0x64, 0x00, 0x00);
@@ -118,10 +118,16 @@ AtomBabies::AtomBabies(FacePosition position, FaceOrientation orientation,
       _backgroundColor(backgroundColor),
       _blinking(false),
       _blinkParam(DEFAULT_BLINK),
-      _bowParam(DEFAULT_BOW) {
+      _bowParam(DEFAULT_BOW),
+      _n_plugins(0),
+      _plugins{0} {
 }
 
 AtomBabies::~AtomBabies(void) {
+    for (size_t p = 0; p < MAX_PLUGINS; ++p) {
+        this->_plugins[p] = nullptr;
+    }
+    this->_n_plugins = 0;
 }
 
 bool AtomBabies::begin(void) {
@@ -131,18 +137,18 @@ bool AtomBabies::begin(void) {
                             this, BLINK_TASK_PRIORITY, nullptr,
                             BLINK_TASK_CORE_ID);
     SERIAL_PRINTF_LN("ATOM Babies v%s", VERSION);
+    updateOrientation();
+    for (size_t p = 0; p < this->_n_plugins; ++p) {
+        this->_plugins[p]->begin(*this);
+    }
     return true;
 }
 
 bool AtomBabies::update(void) {
     M5.update();
-    if (this->_autoOrientation) {
-        const FaceOrientation o = detectOrientation();
-        if (o != this->_orientation) {
-            clear();
-            this->_orientation = o;
-            display();
-        }
+    updateOrientation();
+    for (size_t p = 0; p < this->_n_plugins; ++p) {
+        this->_plugins[p]->update(*this);
     }
     return true;
 }
@@ -186,6 +192,17 @@ bool AtomBabies::isBlinking(void) const {
 
 void AtomBabies::setBlinkParam(const BlinkParam& param) {
     this->_blinkParam = param;
+}
+
+bool AtomBabies::updateOrientation(void) {
+    if (this->_autoOrientation) {
+        const FaceOrientation o = detectOrientation();
+        if (o != this->_orientation) {
+            this->_orientation = o;
+            return true;
+        }
+    }
+    return false;
 }
 
 bool AtomBabies::isAutoOrientation(void) const {
@@ -244,6 +261,13 @@ void AtomBabies::clear(bool partial) {
 
 void AtomBabies::fill(const CRGB& color) {
     M5.dis.fillpix(color);
+}
+
+void AtomBabies::displayData(const CRGB& color, const uint8_t pos[],
+                             size_t len) {
+    for (size_t p = 0; p < len; ++p) {
+        setLED(color, pos[p]);
+    }
 }
 
 void AtomBabies::bow(bool deep) {
@@ -333,9 +357,33 @@ void AtomBabies::displayDigit(const CRGB& color, uint8_t digit) {
     }
     const uint8_t* pos = DIGITS[digit];
     const size_t size = DIGITS_SIZE[digit];
-    for (size_t p = 0; p < size; ++p) {
-        setLED(color, pos[p]);
+    displayData(color, pos, size);
+}
+
+bool AtomBabies::isTouched(float threthold) {
+    float ax, ay, az;
+    M5.IMU.getAccelData(&ax, &ay, &az);
+    // SERIAL_PRINTF_LN("Accel: x = %.1f y = %.1f, z = %.1f", ax, ay, az);
+    if (this->_orientation == OrientationNormal ||
+        this->_orientation == OrientationUpsideDown) {
+        return (abs(ax) >= threthold || 1.0 - abs(ay) >= threthold ||
+                abs(az) >= threthold);
+    } else if (this->_orientation == OrientationLeft ||
+               this->_orientation == OrientationRight) {
+        return (1.0 - abs(ax) >= threthold || abs(ay) >= threthold ||
+                abs(az) >= threthold);
     }
+    return false;
+}
+
+bool AtomBabies::addPlugin(AbstractAtomBabiesPlugin& plugin) {
+    if (this->_n_plugins + 1 >= MAX_PLUGINS) {
+        return false;
+    }
+    this->_plugins[this->_n_plugins] = &plugin;
+    ++this->_n_plugins;
+    SERIAL_PRINTF_LN("Adding %s Plugin", plugin.getName());
+    return true;
 }
 
 void AtomBabies::_doBlink(void) {
@@ -371,9 +419,7 @@ void AtomBabies::setLED(const CRGB& color, uint8_t position) {
 
 void AtomBabies::setLEDs(const CRGB& color,
                          const uint8_t (&position)[N_POSITIONS]) {
-    for (size_t i = 0; i < N_POSITIONS; ++i) {
-        setLED(color, position[i]);
-    }
+    displayData(color, position, N_POSITIONS);
 }
 
 uint8_t AtomBabies::getLEDPosition(uint8_t position) {

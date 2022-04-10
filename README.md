@@ -22,7 +22,7 @@ ATOM Babies は M5Stack 社の<a href="https://shop.m5stack.com/collections/atom
 
 ### Arduino IDE
 
-[https://github.com/3110/atom-babies-arduino/archive/refs/tags/v0.0.4.zip](https://github.com/3110/atom-babies-arduino/archive/refs/tags/v0.0.4.zip) をダウンロードし，メニューの「スケッチ」-「ライブラリをインクルード」-「.ZIP 形式のライブラリをインストール...」を選択して ZIP ファイルを読み込みます。読み込み後，念のために Arduino IDE を再起動してください。
+[https://github.com/3110/atom-babies-arduino/archive/refs/tags/v0.1.0.zip](https://github.com/3110/atom-babies-arduino/archive/refs/tags/v0.1.0.zip) をダウンロードし，メニューの「スケッチ」-「ライブラリをインクルード」-「.ZIP 形式のライブラリをインストール...」を選択して ZIP ファイルを読み込みます。読み込み後，念のために Arduino IDE を再起動してください。
 
 サンプルはメニューの「ファイル」-「スケッチ例」にある「カスタムライブラリのスケッチ例」から「ATOM Babies」を選択し，「AllFaces」「Blink」「Bow」「Greeting」のいずれかを選びます。
 
@@ -75,6 +75,68 @@ void loop(void) {
 }
 ```
 
+### プラグインの実装
+
+Hat や Unit の機能を使って実装するために，プラグインの機構を用意しました。
+`plugins/AbstractAtomBabiesPlugin.h`をインクルードし，`AbstractAtomBabiesPlugin`を継承したクラスを実装してください。
+
+実装例：`SamplePlugin.h`
+
+```cpp
+#pragma once
+
+#include "plugins/AbstractAtomBabiesPlugin.h"
+
+namespace M5Stack_AtomBabies {
+
+class SamplePlugin : public AbstractAtomBabiesPlugin {
+public:
+    SamplePlugin(void) {
+    }
+    virtual ~SamplePlugin(void) {
+    }
+
+    // babies.setup()から呼び出される
+    virtual bool begin(AtomBabies& babies) {
+        return true;
+    }
+
+    // babies.update()から呼び出される
+    virtual bool update(AtomBabies& babies) {
+        return true;
+    }
+
+    virtual const char* getName(void) const {
+        return "Sample";
+    }
+};
+
+}  // namespace M5Stack_AtomBabies
+```
+
+実装したプラグインは`AtomBabies::begin()`を呼び出す前に`AtomBabies::addPlugin()`に渡します。追加できるプラグインの数は今のところ 10（`AtomBabies::MAX_PLUGINS`）で，追加した順に呼び出されます。
+
+```cpp
+#include "AtomBabies.h"
+#include "SamplePlugin.h"
+
+using namespace M5Stack_AtomBabies;
+
+AtomBabies babies;
+SamplePlugin sample;
+
+void setup(void) {
+    babies.addPlugin(sample);
+    babies.begin(); // sample.begin(babies)が呼ばれる
+}
+
+void loop(void) {
+    babies.update(); // sample.update(babies)が呼ばれる
+}
+```
+
+具体的な実装例は`plugins/PIR.[h|cpp]`や，これらを使ったサンプル`Greeting`を参照してください。
+
 ## サンプルの説明
 
 ### すべての向きですべての顔を表示する（`AllFaces`）
@@ -101,7 +163,7 @@ ATOM Babies の顔（ボタン）を押すたびに 0 から順に数字が表�
 ATOM Babies:人が来るとあいさつをする（YouTube）
 </p>
 
-人が目の前に来ると顔を出しておじぎをします。
+人が目の前に来ると顔を出しておじぎをします。PlatformIO 環境でコンパイルする場合は環境を`env:greeting`に変更してください。
 
 <p align="center">
 <a href="https://i.gyazo.com/4491f8348d1d45264d212cc0f971b629.jpg"><img src="https://i.gyazo.com/4491f8348d1d45264d212cc0f971b629.jpg" width="480"/></a><br>
@@ -113,6 +175,17 @@ PIR Hat が胴体となるため，顔の向きは`OrientationUpsideDown`にし�
 
 PIR は Passive pyroelectric infrared detector（受動焦電型赤外線検出器）の略で，人間が発する赤外線を検知し，目の前にいるかを判断します。
 PIR Hat の仕様で，いったん検知した後，次に検知するまでに 2 秒間の遅れがあります。
+
+### 頭をなでると喜ぶ（`Happy`）
+
+<p align="center">
+<a href="https://youtu.be/mfhnQ5W6wxA"><img src="https://img.youtube.com/vi/mfhnQ5W6wxA/0.jpg" width="480"/></a><br>
+ATOM Babies:なでると喜ぶ（YouTube）
+</p>
+
+頭をなでると喜びます。他にも同じ`Happy`が動いている子がいれば，その子たちにも喜びを伝えます。PlatformIO 環境でコンパイルする場合は環境を`env:happy`に変更してください。
+
+試す場合は Hat を付けた状態で底面を固定しておいてください。
 
 ## 参考
 
