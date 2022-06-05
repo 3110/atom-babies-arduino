@@ -106,7 +106,7 @@ public:
     virtual void scrollDigits(const CRGB& color, uint16_t val,
                               uint16_t interval);
 
-    virtual bool isTouched(float threthold = DEFAULT_TOUCH_THRESHOLD);
+    virtual bool isTouched(float threshold = DEFAULT_TOUCH_THRESHOLD);
 
     virtual bool addPlugin(AbstractAtomBabiesPlugin& plugin);
 

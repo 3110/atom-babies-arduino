@@ -360,18 +360,18 @@ void AtomBabies::displayDigit(const CRGB& color, uint8_t digit) {
     displayData(color, pos, size);
 }
 
-bool AtomBabies::isTouched(float threthold) {
+bool AtomBabies::isTouched(float threshold) {
     float ax, ay, az;
     M5.IMU.getAccelData(&ax, &ay, &az);
     // SERIAL_PRINTF_LN("Accel: x = %.1f y = %.1f, z = %.1f", ax, ay, az);
     if (this->_orientation == OrientationNormal ||
         this->_orientation == OrientationUpsideDown) {
-        return (abs(ax) >= threthold || 1.0 - abs(ay) >= threthold ||
-                abs(az) >= threthold);
+        return (abs(ax) >= threshold || 1.0 - abs(ay) >= threshold ||
+                abs(az) >= threshold);
     } else if (this->_orientation == OrientationLeft ||
                this->_orientation == OrientationRight) {
-        return (1.0 - abs(ax) >= threthold || abs(ay) >= threthold ||
-                abs(az) >= threthold);
+        return (1.0 - abs(ax) >= threshold || abs(ay) >= threshold ||
+                abs(az) >= threshold);
     }
     return false;
 }
