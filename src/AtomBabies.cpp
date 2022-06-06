@@ -145,12 +145,13 @@ bool AtomBabies::begin(void) {
 }
 
 bool AtomBabies::update(void) {
+    bool result = false;
     M5.update();
-    updateOrientation();
+    result |= updateOrientation();
     for (size_t p = 0; p < this->_n_plugins; ++p) {
-        this->_plugins[p]->update(*this);
+        result |= this->_plugins[p]->update(*this);
     }
-    return true;
+    return result;
 }
 
 void AtomBabies::openEyes(void) {
