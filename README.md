@@ -3,7 +3,7 @@
 ※[UiFlow](https://flow.m5stack.com/) で実装する場合は[UiFlow 版 ATOM Babies](https://github.com/3110/atom-babies)を参照してください。
 
 <div align="center">
-<img src="https://i.gyazo.com/e46dc64eac0adfe1591c9fb7c9dc737b.jpg" width="480"/>
+<img src="https://i.gyazo.com/a451198da7ae3f5bf32a1002d3c13a27.png" alt="ATOM Babies" width="480"/>
 </div>
 
 ## ATOM Babies とは
